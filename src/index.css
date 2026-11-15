@@ -1,0 +1,61 @@
+
+:root {
+  --forest: #173D2C;
+  --leaf: #477653;
+  --sage: #B8CBAA;
+  --ivory: #F1EDE1;
+  --white: #FFFFFF;
+  --gold: #D49A43;
+
+  --muted: #727B70;
+  --line: rgba(23, 61, 44, 0.13);
+
+  font-family: Inter, 'Segoe UI', Arial, sans-serif;
+  color: #455247;
+  background: var(--ivory);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  min-height: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  color: inherit;
+}
