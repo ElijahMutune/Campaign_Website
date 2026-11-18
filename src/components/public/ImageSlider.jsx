@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
@@ -58,6 +57,16 @@ function ImageSlider({
         goTo(safeIndex + 1)
     }
 
+    function handleKeyDown(event) {
+        if (event.key === 'ArrowLeft') {
+            event.preventDefault()
+            showPrevious()
+        } else if (event.key === 'ArrowRight') {
+            event.preventDefault()
+            showNext()
+        }
+    }
+
     function handlePointerDown(event) {
         if (event.pointerType === 'mouse') return
 
@@ -111,6 +120,9 @@ function ImageSlider({
             className={`image-slider ${className}`}
             aria-label={ariaLabel}
             aria-roledescription="carousel"
+            role="region"
+            tabIndex={0}
+            onKeyDown={handleKeyDown}
             onMouseEnter={() => setPaused(true)}
             onMouseLeave={() => setPaused(false)}
             onFocusCapture={pauseOnFocus}

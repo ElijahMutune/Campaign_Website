@@ -1,4 +1,3 @@
-﻿
 import { motion } from 'framer-motion'
 import {
   ArrowDownRight,
@@ -51,10 +50,11 @@ function getExcerpt(value, limit = 190) {
   return `${plainText.slice(0, limit).trim()}...`
 }
 
-function MediaVisual({ mediaId, alt = '' }) {
-  const [failed, setFailed] = useState(false)
+function MediaVisual({ mediaId, alt = '', variant = 'card' }) {
+  const [failedMediaId, setFailedMediaId] = useState(null)
+  const [imageInfo, setImageInfo] = useState({ mediaId: null, shape: 'landscape' })
 
-  if (!mediaId || failed) {
+  if (!mediaId || failedMediaId === mediaId) {
     return (
         <div className="editorial-image-placeholder">
           <span>CAMPAIGN MEDIA</span>
@@ -63,14 +63,50 @@ function MediaVisual({ mediaId, alt = '' }) {
     )
   }
 
+  const imageUrl = publicApi.getPublicMediaFileUrl(mediaId)
+  const imageShape = imageInfo.mediaId === mediaId
+      ? imageInfo.shape
+      : 'landscape'
+  const isPortrait = imageShape === 'portrait'
+
+  const handleImageLoad = (event) => {
+    const { naturalWidth, naturalHeight } = event.currentTarget
+
+    if (!naturalWidth || !naturalHeight) return
+
+    // Portrait and near-square posters should remain fully visible.
+    const shape = naturalHeight >= naturalWidth * 0.92
+        ? 'portrait'
+        : 'landscape'
+
+    setImageInfo({ mediaId, shape })
+  }
+
   return (
-      <img
-          className="editorial-image"
-          src={publicApi.getPublicMediaFileUrl(mediaId)}
-          alt={alt}
-          loading="lazy"
-          onError={() => setFailed(true)}
-      />
+      <div
+          className={`editorial-media-visual editorial-media-visual--${variant} ${
+            isPortrait ? 'is-portrait' : 'is-landscape'
+          }`}
+      >
+        {isPortrait && (
+            <img
+                className="editorial-image-backdrop"
+                src={imageUrl}
+                alt=""
+                aria-hidden="true"
+                loading="lazy"
+            />
+        )}
+
+        <img
+            className="editorial-image"
+            src={imageUrl}
+            alt={alt}
+            loading={variant === 'hero' ? 'eager' : 'lazy'}
+            onLoad={handleImageLoad}
+            onError={() => setFailedMediaId(mediaId)}
+        />
+      </div>
   )
 }
 
@@ -90,11 +126,14 @@ function StorySlide({
           <MediaVisual
               mediaId={mediaId}
               alt={item.title || category}
+              variant="card"
           />
         </div>
 
         <div className="editorial-story-copy">
-          <span className="editorial-category">{category}</span>
+          <div className="editorial-story-kicker">
+            <span className="editorial-category">{category}</span>
+          </div>
 
           <h3>{item.title}</h3>
 
@@ -104,7 +143,7 @@ function StorySlide({
 
           <div className="editorial-story-meta">
             {date && (
-                <span>{formatDate(date)}</span>
+                <span className="editorial-story-date">{formatDate(date)}</span>
             )}
 
             {linkUrl && (
@@ -113,7 +152,7 @@ function StorySlide({
                     target={isExternal ? '_blank' : undefined}
                     rel={isExternal ? 'noopener noreferrer' : undefined}
                 >
-                  Read more <ArrowUpRight size={15} />
+                  Read story <ArrowUpRight size={14} />
                 </a>
             )}
           </div>
@@ -160,15 +199,23 @@ function EditorialSection({
                 </span>
         </div>
 
-        <ImageSlider
-            items={items}
-            renderSlide={renderSlide}
-            ariaLabel={title}
-            autoPlay
-            interval={5500}
-            className="editorial-story-slider"
-            emptyMessage={emptyMessage}
-        />
+        {Array.isArray(items) && items.length > 0 ? (
+            <div className="editorial-card-grid" role="list" aria-label={title}>
+              {items.map((item, index) => (
+                  <div
+                      className="editorial-card-grid-item"
+                      key={item.id ?? `${id}-${index}`}
+                      role="listitem"
+                  >
+                    {renderSlide ? renderSlide(item, index) : null}
+                  </div>
+              ))}
+            </div>
+        ) : (
+            <div className="editorial-empty-state" role="status">
+              {emptyMessage}
+            </div>
+        )}
       </motion.section>
   )
 }
@@ -317,6 +364,7 @@ function HomePage() {
                           <MediaVisual
                               mediaId={item.mediaId}
                               alt={item.title}
+                              variant="hero"
                           />
 
                           <div className="editorial-hero-image-caption">
