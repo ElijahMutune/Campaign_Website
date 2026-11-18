@@ -1,4 +1,5 @@
-﻿name: Deploy Vite Website to GitHub Pages
+
+name: Deploy Vite Website to GitHub Pages
 
 on:
   push:
@@ -33,6 +34,8 @@ jobs:
         run: npm ci
 
       - name: Build production website
+        env:
+          VITE_API_URL: https://campaignwebsitebackend-production-83ab82d7.up.railway.app/api
         run: npm run build
 
       - name: Configure GitHub Pages
