@@ -1932,3 +1932,95 @@
     justify-content: center;
   }
 }
+
+
+
+/* =========================================================
+   ADMIN SIDEBAR - INDEPENDENT NAVIGATION SCROLL
+========================================================= */
+
+.workspace-sidebar {
+  height: 100vh;
+  height: 100dvh;
+  box-sizing: border-box;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Keep campaign branding visible */
+.workspace-brand {
+  flex: 0 0 auto;
+}
+
+/* Keep workspace heading visible */
+.sidebar-section-label {
+  flex: 0 0 auto;
+}
+
+/* Only the navigation area scrolls */
+.workspace-navigation {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+
+  padding-right: 6px;
+  margin-right: -6px;
+
+  scrollbar-width: thin;
+  scrollbar-color: rgba(23, 61, 44, 0.35) transparent;
+}
+
+/* Keep navigation links at their intended height */
+.workspace-nav-link {
+  flex: 0 0 auto;
+  min-height: 46px;
+}
+
+/* Keep account information and bottom actions visible */
+.workspace-user,
+.workspace-exit {
+  flex-shrink: 0;
+}
+
+/* Separate user information from navigation */
+.workspace-user {
+  margin-top: 12px;
+}
+
+/* Custom scrollbar for Chrome, Edge and Safari */
+.workspace-navigation::-webkit-scrollbar {
+  width: 6px;
+}
+
+.workspace-navigation::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.workspace-navigation::-webkit-scrollbar-thumb {
+  background: rgba(23, 61, 44, 0.3);
+  border-radius: 20px;
+}
+
+.workspace-navigation::-webkit-scrollbar-thumb:hover {
+  background: rgba(23, 61, 44, 0.6);
+}
+
+/* Mobile sidebar */
+@media (max-width: 700px) {
+  .workspace-sidebar {
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  .workspace-navigation {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
